@@ -1,12 +1,38 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Car, Users, MapPin, Clock, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Car, Users, MapPin, Clock, Shield, Star } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { ToastContainer } from 'react-toastify';
 
 const Home = () => {
+  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // Check login status
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token); // true if token exists
+  }, []);
 
 
+  // Handle click on Passenger Card
+  const handlePassengerClick = () => {
+    if (isLoggedIn) {
+      navigate("/passenger"); // or your actual passenger route
+    } else {
+      navigate("/register?role=passenger");
+    }
+  };
+
+  // You can add a similar function for the driver if needed
+  const handleDriverClick = () => {
+    if (isLoggedIn) {
+      navigate("/driver"); // or another route if logged in
+    } else {
+      navigate("/register?role=driver");
+    }
+  };
 
   return (
 
@@ -25,8 +51,8 @@ const Home = () => {
             
             {/* Role Selection Cards */}
             <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mt-16">
-              <Link 
-                to="/register?role=passenger" 
+              <div 
+                onClick={handlePassengerClick}
                 className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-200"
               >
                 <div className="text-center">
@@ -37,14 +63,14 @@ const Home = () => {
                   <p className="text-gray-600 mb-6">
                     Book rides quickly and safely. Get to your destination with ease.
                   </p>
-                  <div className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium group-hover:bg-blue-700 transition-colors">
+                  <div className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium group-hover:bg-blue-700 transition-colors" >
                     Get Started
                   </div>
                 </div>
-              </Link>
+              </div>
 
-              <Link 
-                to="/register?role=driver" 
+              <div 
+                onClick={handleDriverClick}
                 className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-200"
               >
                 <div className="text-center">
@@ -59,7 +85,7 @@ const Home = () => {
                     Start Driving
                   </div>
                 </div>
-              </Link>
+              </div>
             </div>
           </div>
         </div>

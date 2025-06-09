@@ -57,6 +57,9 @@ const Login = () => {
       handleSuccess("Login successful!");
       setTimeout(() => {
         navigate("/", { replace: true });
+        setTimeout(() => {
+          window.location.reload();
+        }, 100);
       }, 1000);
     }
 
