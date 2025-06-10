@@ -50,6 +50,7 @@ const Login = () => {
     localStorage.setItem("token", token);
     localStorage.setItem("email", formData.email);
     localStorage.setItem("name", user?.firstName || "User");
+    localStorage.setItem("phone", user?.phone || "1234567890");
 
     console.log("Login result:", result);
     // Show message and redirect

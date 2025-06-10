@@ -1,8 +1,89 @@
 
 import React from 'react';
 import { MapPin, Clock, Star, CreditCard, History } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { ToastContainer } from 'react-toastify';
+import { handleSuccess , handleError } from '../utils'; // Assuming you have a utility for handling notifications
 
 const PassengerDashboard = () => {
+
+  const [rideData, setRideData] = useState({
+    name: '',
+    email: '',
+    phone : '',
+    pickupLocation: '',
+    dropLocation: ''
+  });
+
+  // On component mount, populate name & email from localStorage
+useEffect(() => {
+  const name = localStorage.getItem('name') || '';
+  const email = localStorage.getItem('email') || '';
+  const phone = localStorage.getItem('phone') || '';
+
+  setRideData((prevData) => ({
+    ...prevData,
+    name,
+    email,
+    phone
+  }));
+}, []);
+
+  console.log(localStorage.getItem('name'));
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setRideData((prevData) => ({
+      ...prevData,
+      [name]: value
+    }));
+  };
+  console.log('Ride Data:', rideData);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const token = localStorage.getItem('token');
+
+      const response = await fetch('http://localhost:3000/passenger/post', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          // 'Authorization': `Bearer ${token}` // if using middleware
+        },
+        body: JSON.stringify(
+          {
+            name: rideData.name,
+            email: rideData.email,
+            phone : rideData.phone,
+            pickupLocation: rideData.pickupLocation,
+            dropLocation: rideData.dropLocation
+          }
+        )
+      });
+
+      const result = await response.json();
+      console.log('Ride created:', result);
+      if(response.ok) {
+        // Clear form fields
+        setRideData({
+          name: rideData.name,
+          email: rideData.email,
+          phone : rideData.phone,
+          pickupLocation: '',
+          dropLocation: ''
+        });
+        // Show success message
+        handleSuccess('Ride booked successfully!');
+      } else {
+        handleError(result.message || 'Failed to book ride');
+      }
+    } catch (err) {
+      console.error('Error submitting ride:', err);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -14,10 +95,10 @@ const PassengerDashboard = () => {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Main Booking Section */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+            <div className="bg-white rounded-xl shadow-lg p-6 mb-6" >
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Book a Ride</h2>
               
-              <div className="space-y-4">
+              <form className="space-y-4" onSubmit={handleSubmit}>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Pickup Location</label>
                   <div className="relative">
@@ -26,6 +107,9 @@ const PassengerDashboard = () => {
                       type="text"
                       className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="Enter pickup location"
+                      onChange={handleInputChange}
+                      name="pickupLocation"
+                      value={rideData.pickupLocation}
                     />
                   </div>
                 </div>
@@ -38,14 +122,18 @@ const PassengerDashboard = () => {
                       type="text"
                       className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="Where to?"
+                      onChange={handleInputChange}
+                      name="dropLocation"
+                      value={rideData.dropLocation}
                     />
                   </div>
                 </div>
                 
-                <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                  type='submit'>
                   Find Rides
                 </button>
-              </div>
+              </form>
             </div>
 
             {/* Current Trip */}
@@ -119,9 +207,11 @@ const PassengerDashboard = () => {
             </div>
           </div>
         </div>
+      <ToastContainer />
       </div>
     </div>
   );
 };
+
 
 export default PassengerDashboard;

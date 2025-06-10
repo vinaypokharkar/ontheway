@@ -30,6 +30,8 @@ const Register = () => {
     });
   };
 
+
+
   console.log('formData:', formData);
 
   const handleSubmit = async (e: React.FormEvent) => {
