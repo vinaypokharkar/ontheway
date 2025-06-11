@@ -51,5 +51,22 @@ A full-stack ride-sharing application where passengers can register, book rides,
 ```bash
 git clone https://github.com/yourusername/otw-rideshare.git
 cd otw-rideshare
+```
 
 ### Step 2. Backend Setup
+```bash
+cd backend
+npm install
+```
+
+Create a .env file inside the backend folder and add:
+```bash
+MONGO_URI=your_mongodb_uri
+JWT_SECRET=your_jwt_secret
+PORT=3000
+```
+
+Run the server:
+```bash
+nodemon index.js
+```
