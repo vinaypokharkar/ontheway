@@ -52,7 +52,7 @@ A full-stack ride-sharing application where passengers can register, book rides,
 git clone https://github.com/yourusername/otw-rideshare.git
 cd otw-rideshare
 ```
-
+---
 ### Step 2. Backend Setup
 ```bash
 cd backend
@@ -69,4 +69,11 @@ PORT=3000
 Run the server:
 ```bash
 nodemon index.js
+```
+---
+### Step 3. Frontend Setup
+```bash
+cd ../frontend
+npm install
+npm run dev
 ```
