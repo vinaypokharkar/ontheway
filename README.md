@@ -52,3 +52,4 @@ A full-stack ride-sharing application where passengers can register, book rides,
 git clone https://github.com/yourusername/otw-rideshare.git
 cd otw-rideshare
 
+### Step 2. Backend Setup
